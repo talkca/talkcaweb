@@ -1,12 +1,164 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Video Hub</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TALKCA • Finance + Data + Intelligence</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
-<body style="font-family:Arial; padding:24px;">
-  <h1>My Video Hub</h1>
-  <p>Website is live.</p>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">T</div>
+    <div>
+      <h1>TALKCA</h1>
+      <small>Finance • Data • Intelligence</small>
+    </div>
+  </div>
+  <nav class="nav">
+    <a class="active" href="index.html">Home</a>
+    <a href="explainers.html">Explainers</a>
+    <a href="shorts.html">Shorts</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- HERO: Featured video -->
+  <section class="hero">
+    <div class="card videoCard">
+      <div class="thumb">
+        <span class="badge">Featured • Long</span>
+        <span class="pill">8–10 min</span>
+      </div>
+      <div class="vBody">
+        <div class="kicker">Latest Focus</div>
+        <h2 class="h-title">The $1 Salary Problem: When Money Stops Working</h2>
+        <p class="p">A clean breakdown of how inflation, controls, and currency collapse destroy purchasing power — explained with numbers and visuals.</p>
+        <div class="metaRow">
+          <span class="pill">Topic: Inflation</span>
+          <span class="pill">Updated: 2026-01-08</span>
+          <span class="pill">Format: Visual explainers</span>
+        </div>
+        <div class="actions">
+          <!-- OPTION 1: send to YouTube (your monetization path) -->
+          <a class="btn primary" href="https://www.youtube.com/" target="_blank" rel="noopener">Watch on YouTube</a>
+
+          <!-- OPTION 2: open your own detail page -->
+          <a class="btn" href="video.html">Open the write-up</a>
+        </div>
+        <div class="note">Tip: Later, this “Featured” block can be auto-filled by your admin workflow. For now, you just edit this title + link.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: quick browse -->
+    <aside class="card pad">
+      <div class="kicker">Browse</div>
+      <h2 style="margin:10px 0 8px; font-size:18px;">Topics that perform well</h2>
+      <p class="p">Keep categories tight. It improves navigation and sharing.</p>
+
+      <div class="metaRow" style="margin-top:14px;">
+        <span class="pill">Inflation</span>
+        <span class="pill">Currency</span>
+        <span class="pill">GDP & Rankings</span>
+        <span class="pill">Markets</span>
+        <span class="pill">Personal Finance</span>
+      </div>
+
+      <div class="searchRow">
+        <input class="input" placeholder="Search titles (manual now, auto later)" />
+        <select class="select">
+          <option>All</option>
+          <option>Long</option>
+          <option>Short</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="explainers.html">See all explainers</a>
+        <a class="btn" href="shorts.html">See all shorts</a>
+      </div>
+
+      <div class="note">When you add admin later, this search/filter can become real. The visual layout stays unchanged.</div>
+    </aside>
+  </section>
+
+  <!-- LATEST LONG -->
+  <div class="sectionTitle">
+    <h2>Latest Explainers</h2>
+    <a href="explainers.html">View all</a>
+  </div>
+  <section class="cards">
+    <a class="card videoCard" href="video.html">
+      <div class="thumb"><span class="badge">Long</span></div>
+      <div class="vBody">
+        <h3>Why Prices Rise Faster Than Salaries</h3>
+        <p>Purchasing power explained with a simple, visual model.</p>
+      </div>
+    </a>
+
+    <a class="card videoCard" href="video.html">
+      <div class="thumb"><span class="badge">Long</span></div>
+      <div class="vBody">
+        <h3>Currency Collapse: The 3 Signals Everyone Misses</h3>
+        <p>Reserves, confidence, and the black-market premium.</p>
+      </div>
+    </a>
+
+    <a class="card videoCard" href="video.html">
+      <div class="thumb"><span class="badge">Long</span></div>
+      <div class="vBody">
+        <h3>GDP Rankings: What the Chart Doesn’t Tell You</h3>
+        <p>Nominal vs PPP vs living cost reality in one story.</p>
+      </div>
+    </a>
+  </section>
+
+  <!-- LATEST SHORTS -->
+  <div class="sectionTitle">
+    <h2>Latest Shorts</h2>
+    <a href="shorts.html">View all</a>
+  </div>
+  <section class="cards">
+    <a class="card videoCard" href="shorts.html">
+      <div class="thumb"><span class="badge short">Short</span></div>
+      <div class="vBody">
+        <h3>1 Trillion Can’t Buy Food</h3>
+        <p>When currency becomes paper.</p>
+      </div>
+    </a>
+
+    <a class="card videoCard" href="shorts.html">
+      <div class="thumb"><span class="badge short">Short</span></div>
+      <div class="vBody">
+        <h3>Inflation vs You (10 seconds)</h3>
+        <p>The silent tax explained fast.</p>
+      </div>
+    </a>
+
+    <a class="card videoCard" href="shorts.html">
+      <div class="thumb"><span class="badge short">Short</span></div>
+      <div class="vBody">
+        <h3>Currency Pegs Break Like This</h3>
+        <p>Pressure builds, then snaps.</p>
+      </div>
+    </a>
+  </section>
+
+  <footer class="footer">
+    <div>© <span id="y"></span> TALKCA • Finance • Data • Intelligence</div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="pill" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
+      <a class="pill" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a class="pill" href="#" target="_blank" rel="noopener">X</a>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
