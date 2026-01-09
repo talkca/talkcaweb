@@ -5,6 +5,165 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>TALKCA • Video</title>
   <link rel="stylesheet" href="assets/site.css">
+  <style>
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .video-thumbnail {
+      width: 100%;
+      border-radius: 16px;
+      cursor: pointer;
+      display: block;
+    }
+    .play-icon-large {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 56px;
+      background: rgba(255,0,0,0.9);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .play-icon-large::after {
+      content: "";
+      border-style: solid;
+      border-width: 14px 0 14px 24px;
+      border-color: transparent transparent transparent white;
+      margin-left: 4px;
+    }
+    .video-container:hover .play-icon-large {
+      background: rgba(255,0,0,1);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+    .video-info {
+      max-width: 800px;
+      margin: 24px auto 0;
+    }
+    .video-title {
+      font-size: 28px;
+      line-height: 1.2;
+      margin: 0 0 12px;
+    }
+    .video-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .video-description {
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .watch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 24px;
+      font-size: 16px;
+      background: linear-gradient(145deg, rgba(255,0,0,0.9), rgba(200,0,0,0.9));
+      border: none;
+      border-radius: 14px;
+      color: white;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .watch-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,0,0,0.3);
+    }
+    .share-section {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(30,42,74,.5);
+    }
+    .share-link {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .share-link input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(30,42,74,.75);
+      background: rgba(10,16,32,.7);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .copy-btn {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(124,255,178,.4);
+      background: rgba(124,255,178,.1);
+      color: var(--ok);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: rgba(124,255,178,.2);
+    }
+    .related-section {
+      margin-top: 40px;
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 800px) { .related-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .related-grid { grid-template-columns: 1fr; } }
+    .thumb-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(30,42,74,.7);
+    }
+    .thumb-overlay {
+      position: relative;
+    }
+    .thumb-overlay .thumb-badges {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .play-icon-small {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 35px;
+      background: rgba(255,0,0,0.9);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .play-icon-small::after {
+      content: "";
+      border-style: solid;
+      border-width: 7px 0 7px 12px;
+      border-color: transparent transparent transparent white;
+      margin-left: 2px;
+    }
+  </style>
 </head>
 <body>
 
@@ -13,7 +172,7 @@
     <div class="mark">T</div>
     <div>
       <h1>TALKCA</h1>
-      <small>Video write-up</small>
+      <small>Finance • Data • Intelligence</small>
     </div>
   </div>
   <nav class="nav">
@@ -25,46 +184,61 @@
 
 <main class="container">
 
-  <section class="grid2">
-    <div id="videoCard" class="card videoCard">
-      <!-- Dynamically populated -->
-      <div class="thumb">
-        <span class="badge">Long</span>
-        <span class="pill">Loading...</span>
-      </div>
-      <div class="vBody">
-        <div class="kicker">Video</div>
-        <h2 style="margin:10px 0 8px;">Loading...</h2>
-        <p class="p">Loading content...</p>
-      </div>
+  <!-- VIDEO PLAYER AREA -->
+  <div id="videoPlayer" class="video-container">
+    <p class="p">Loading video...</p>
+  </div>
+
+  <!-- VIDEO INFO -->
+  <div id="videoInfo" class="video-info">
+    <p class="p">Loading...</p>
+  </div>
+
+  <!-- RELATED VIDEOS -->
+  <div id="relatedSection" class="related-section">
+    <div class="sectionTitle">
+      <h2>Related Videos</h2>
+      <a href="explainers.html">View all</a>
     </div>
-
-    <aside id="sidePanel" class="card pad">
-      <!-- Dynamically populated -->
-      <div class="kicker">Key Takeaways</div>
-      <p class="p">Loading...</p>
-    </aside>
-  </section>
-
-  <section id="writeupSection" class="card pad" style="margin-top:16px;">
-    <!-- Dynamically populated -->
-  </section>
+    <div id="relatedVideos" class="related-grid"></div>
+  </div>
 
   <footer class="footer">
     <div>© <span id="y"></span> TALKCA • Finance • Data • Intelligence</div>
-    <div><a class="pill" href="index.html">Home</a></div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="pill" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
+      <a class="pill" href="index.html">Home</a>
+    </div>
   </footer>
 
 </main>
 
 <script>
-// ============================================
-// DATA LOADING
-// ============================================
 let currentVideo = null;
+let allVideos = [];
+
+function getYouTubeId(url) {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&\?\/]+)/,
+    /^([a-zA-Z0-9_-]{11})$/
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function getThumbnail(url, quality = 'maxresdefault') {
+  const videoId = getYouTubeId(url);
+  if (videoId) {
+    return `https://img.youtube.com/vi/${videoId}/${quality}.jpg`;
+  }
+  return null;
+}
 
 async function loadVideo() {
-  // Get video ID from URL
   const params = new URLSearchParams(window.location.search);
   const videoId = params.get('id');
   
@@ -73,10 +247,7 @@ async function loadVideo() {
     return;
   }
   
-  // Load all videos
-  let allVideos = [];
   const localData = localStorage.getItem('talkca_videos');
-  
   if (localData) {
     allVideos = JSON.parse(localData);
   } else {
@@ -87,11 +258,10 @@ async function loadVideo() {
         localStorage.setItem('talkca_videos', JSON.stringify(allVideos));
       }
     } catch (e) {
-      console.log('Could not load videos');
+      allVideos = [];
     }
   }
   
-  // Find the specific video
   currentVideo = allVideos.find(v => v.id === videoId);
   
   if (!currentVideo) {
@@ -100,155 +270,162 @@ async function loadVideo() {
   }
   
   renderVideo();
+  renderRelated();
 }
 
 function showNotFound() {
-  document.getElementById('videoCard').innerHTML = `
-    <div class="thumb">
-      <span class="badge">Error</span>
-    </div>
-    <div class="vBody">
-      <div class="kicker">Not Found</div>
-      <h2 style="margin:10px 0 8px;">Video not found</h2>
+  document.getElementById('videoPlayer').innerHTML = `
+    <div class="card pad" style="text-align:center; padding:60px 20px;">
+      <h2 style="margin:0 0 12px;">Video Not Found</h2>
       <p class="p">This video doesn't exist or has been removed.</p>
-      <div class="actions">
+      <div class="actions" style="justify-content:center; margin-top:20px;">
         <a class="btn primary" href="index.html">Go to Home</a>
-        <a class="btn" href="explainers.html">Browse Explainers</a>
       </div>
     </div>
   `;
-  document.getElementById('sidePanel').innerHTML = '';
-  document.getElementById('writeupSection').innerHTML = '';
+  document.getElementById('videoInfo').innerHTML = '';
+  document.getElementById('relatedSection').style.display = 'none';
 }
 
 function renderVideo() {
-  // Update page title
   document.title = `TALKCA • ${currentVideo.title}`;
   
-  // Render main card
-  const typeLabel = currentVideo.type === 'long' ? 'Long' : 'Short';
-  const backLink = currentVideo.type === 'long' ? 'explainers.html' : 'shorts.html';
+  const thumbnail = getThumbnail(currentVideo.url, 'maxresdefault');
+  const thumbnailFallback = getThumbnail(currentVideo.url, 'hqdefault');
   
-  document.getElementById('videoCard').innerHTML = `
-    <div class="thumb">
-      <span class="badge${currentVideo.type === 'short' ? ' short' : ''}">${typeLabel}</span>
-      <span class="pill">Topic: ${currentVideo.topic}</span>
+  // Video thumbnail with play button
+  document.getElementById('videoPlayer').innerHTML = `
+    <a href="${currentVideo.url}" target="_blank" rel="noopener" style="display:block; position:relative;">
+      <img 
+        src="${thumbnail}" 
+        alt="${currentVideo.title}" 
+        class="video-thumbnail"
+        onerror="this.src='${thumbnailFallback}'"
+      >
+      <div class="play-icon-large"></div>
+    </a>
+  `;
+  
+  // Video info
+  const shareUrl = window.location.href;
+  
+  document.getElementById('videoInfo').innerHTML = `
+    <h1 class="video-title">${currentVideo.title}</h1>
+    
+    <div class="video-meta">
+      <span class="pill">${currentVideo.type === 'long' ? 'Explainer' : 'Short'}</span>
+      <span class="pill">${currentVideo.topic}</span>
+      <span class="pill">${currentVideo.duration || '5-10 min'}</span>
+      <span class="pill">${currentVideo.date}</span>
     </div>
-    <div class="vBody">
-      <div class="kicker">Video</div>
-      <h2 style="margin:10px 0 8px;">${currentVideo.title}</h2>
-      <p class="p">${currentVideo.description}</p>
-
-      <div class="actions">
-        <a class="btn primary" href="${currentVideo.url}" target="_blank" rel="noopener">Watch on YouTube</a>
-        <a class="btn" href="${backLink}">Back to library</a>
+    
+    <p class="video-description">${currentVideo.description}</p>
+    
+    <a href="${currentVideo.url}" target="_blank" rel="noopener" class="watch-btn">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+      </svg>
+      Watch on YouTube
+    </a>
+    
+    <div class="share-section">
+      <div class="kicker" style="margin-bottom:10px;">Share This Video</div>
+      <div class="share-link">
+        <input type="text" id="shareUrl" value="${shareUrl}" readonly onclick="this.select()">
+        <button class="copy-btn" onclick="copyLink()">Copy Link</button>
       </div>
-
-      <div class="metaRow">
-        <span class="pill">Published: ${currentVideo.date}</span>
-        <span class="pill">Length: ${currentVideo.duration || '5-10 min'}</span>
-      </div>
+      <p class="note" style="margin-top:10px;">Share this link with friends!</p>
     </div>
   `;
-  
-  // Render side panel with takeaways
-  const takeaways = getTakeaways(currentVideo.topic);
-  document.getElementById('sidePanel').innerHTML = `
-    <div class="kicker">Key Takeaways</div>
-    <ul style="margin:12px 0 0; padding-left:18px; color:var(--muted); line-height:1.6;">
-      ${takeaways.map(t => `<li>${t}</li>`).join('')}
-    </ul>
-
-    <div style="margin-top:16px;" class="kicker">Source notes</div>
-    <p class="note">Data and context referenced in the video. External citations available in the video description on YouTube.</p>
-  `;
-  
-  // Render writeup section
-  document.getElementById('writeupSection').innerHTML = `
-    <div class="kicker">Brief write-up</div>
-    <h2 style="margin:10px 0 6px; font-size:18px;">What this video covers</h2>
-    <p class="p">
-      ${currentVideo.description} This episode breaks down the mechanisms and context using clear visuals and simple explanations.
-    </p>
-
-    <div class="sectionTitle" style="margin-top:18px;">
-      <h2>Related Videos</h2>
-    </div>
-    <div id="relatedVideos" class="metaRow">
-      <!-- Populated dynamically -->
-    </div>
-  `;
-  
-  // Load related videos
-  loadRelatedVideos();
 }
 
-function getTakeaways(topic) {
-  // Topic-specific takeaways
-  const takeawaysByTopic = {
-    'Inflation': [
-      'Nominal wages can rise while real wages collapse.',
-      'Prices adjust faster than income in high-inflation environments.',
-      'Controls distort prices and create shortages.',
-      'Purchasing power is what matters, not the number on your paycheck.'
-    ],
-    'Currency': [
-      'FX reserves are the first line of defense.',
-      'Black market premiums signal loss of confidence.',
-      'Controls create parallel markets and pricing chaos.',
-      'Confidence is a financial variable, not just a feeling.'
-    ],
-    'GDP & Rankings': [
-      'Nominal GDP doesn\'t account for purchasing power.',
-      'PPP adjustments reveal different stories.',
-      'Living costs vary dramatically across countries.',
-      'Rankings hide as much as they reveal.'
-    ],
-    'Markets': [
-      'Markets price in expectations, not just current reality.',
-      'Liquidity drives short-term movements.',
-      'Fundamentals matter over the long term.',
-      'Sentiment can diverge from value for extended periods.'
-    ],
-    'Personal Finance': [
-      'Emergency funds are non-negotiable.',
-      'Compound interest works both ways.',
-      'Diversification reduces risk, not returns.',
-      'Time in market beats timing the market.'
-    ]
-  };
-  
-  return takeawaysByTopic[topic] || takeawaysByTopic['Inflation'];
-}
-
-function loadRelatedVideos() {
-  const localData = localStorage.getItem('talkca_videos');
-  if (!localData || !currentVideo) return;
-  
-  const allVideos = JSON.parse(localData);
-  
-  // Get videos with same topic, excluding current
+function renderRelated() {
   const related = allVideos
-    .filter(v => v.topic === currentVideo.topic && v.id !== currentVideo.id)
+    .filter(v => v.id !== currentVideo.id && v.topic === currentVideo.topic)
     .slice(0, 3);
+  
+  // If not enough from same topic, add others
+  if (related.length < 3) {
+    const others = allVideos
+      .filter(v => v.id !== currentVideo.id && !related.includes(v))
+      .slice(0, 3 - related.length);
+    related.push(...others);
+  }
   
   const container = document.getElementById('relatedVideos');
   
   if (related.length === 0) {
-    container.innerHTML = '<span class="pill">No related videos yet</span>';
+    container.innerHTML = '<p class="note">No related videos yet.</p>';
     return;
   }
   
-  container.innerHTML = related.map(v => `
-    <a href="video.html?id=${v.id}" class="pill" style="cursor:pointer;">${v.title.substring(0, 30)}${v.title.length > 30 ? '...' : ''}</a>
-  `).join('');
+  container.innerHTML = related.map(video => {
+    const thumb = getThumbnail(video.url, 'mqdefault');
+    const badgeClass = video.type === 'short' ? 'badge short' : 'badge';
+    const badgeText = video.type === 'short' ? 'Short' : 'Long';
+    
+    return `
+      <a class="card videoCard" href="video.html?id=${video.id}">
+        <div class="thumb-overlay">
+          <img src="${thumb}" alt="${video.title}" class="thumb-img">
+          <div class="play-icon-small"></div>
+          <div class="thumb-badges">
+            <span class="${badgeClass}" style="font-size:10px; padding:5px 7px;">${badgeText}</span>
+          </div>
+        </div>
+        <div class="vBody">
+          <h3 style="font-size:14px;">${video.title}</h3>
+          <p style="font-size:12px;">${video.description.substring(0, 60)}...</p>
+        </div>
+      </a>
+    `;
+  }).join('');
 }
 
-// ============================================
-// INIT
-// ============================================
+function copyLink() {
+  const input = document.getElementById('shareUrl');
+  input.select();
+  document.execCommand('copy');
+  
+  const btn = document.querySelector('.copy-btn');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy Link', 2000);
+}
+
 document.getElementById('y').textContent = new Date().getFullYear();
 loadVideo();
 </script>
+
 </body>
 </html>
+```
+
+## Step 4: Click "Commit changes" → "Commit changes"
+
+---
+
+## Test It!
+
+1. Wait 1-2 minutes
+2. Go to: `https://talkcaweb.pages.dev`
+3. Press `Ctrl + Shift + R`
+4. Click any video
+5. You should see:
+   - ✅ Video thumbnail (large)
+   - ✅ Title, description, topic
+   - ✅ "Watch on YouTube" button
+   - ✅ **Share This Video** section with copyable link!
+   - ✅ Related videos
+
+---
+
+## How to Share a Video:
+
+1. Click any video on your site
+2. Scroll down to "Share This Video"
+3. Click "Copy Link"
+4. Share it anywhere!
+
+**Example link:**
+```
+https://talkcaweb.pages.dev/video.html?id=v1736409876543
