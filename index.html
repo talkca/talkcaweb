@@ -12,6 +12,12 @@
       object-fit: cover;
       border-bottom: 1px solid rgba(30,42,74,.7);
     }
+    .thumb-img-large {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(30,42,74,.7);
+    }
     .thumb-overlay {
       position: relative;
     }
@@ -49,6 +55,13 @@
       background: rgba(255,0,0,1);
       transform: translate(-50%, -50%) scale(1.1);
     }
+    .suggested-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 980px) { .suggested-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 620px) { .suggested-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -107,10 +120,10 @@
   </section>
 
   <div class="sectionTitle">
-    <h2>Latest Explainers</h2>
+    <h2>Suggested Videos</h2>
     <a href="explainers.html">View all</a>
   </div>
-  <section id="latestExplainers" class="cards"></section>
+  <section id="suggestedVideos" class="suggested-grid"></section>
 
   <div class="sectionTitle">
     <h2>Latest Shorts</h2>
@@ -174,7 +187,7 @@ async function loadVideos() {
 
 function renderPage() {
   renderFeatured();
-  renderLatestExplainers();
+  renderSuggested();
   renderLatestShorts();
 }
 
@@ -190,7 +203,7 @@ function renderFeatured() {
   if (thumbnail) {
     thumbHTML = `
       <div class="thumb-overlay">
-        <img src="${thumbnail}" alt="${featured.title}" class="thumb-img">
+        <img src="${thumbnail}" alt="${featured.title}" class="thumb-img-large">
         <div class="play-icon"></div>
         <div class="thumb-badges">
           <span class="badge">Featured • ${typeLabel}</span>
@@ -200,7 +213,7 @@ function renderFeatured() {
     `;
   } else {
     thumbHTML = `
-      <div class="thumb">
+      <div class="thumb" style="height:240px;">
         <span class="badge">Featured • ${typeLabel}</span>
         <span class="pill">${featured.duration || '5-10 min'}</span>
       </div>
@@ -208,7 +221,7 @@ function renderFeatured() {
   }
   
   container.innerHTML = `
-    <a href="${featured.url}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; display:block;">
+    <a href="video.html?id=${featured.id}" style="text-decoration:none; color:inherit; display:block;">
       ${thumbHTML}
       <div class="vBody">
         <div class="kicker">Latest Focus</div>
@@ -216,19 +229,28 @@ function renderFeatured() {
         <p class="p">${featured.description}</p>
         <div class="metaRow">
           <span class="pill">Topic: ${featured.topic}</span>
-          <span class="pill">Updated: ${featured.date}</span>
+          <span class="pill">${featured.date}</span>
         </div>
       </div>
     </a>
   `;
 }
 
-function renderLatestExplainers() {
-  const explainers = allVideos
-    .filter(v => v.type === 'long')
+function renderSuggested() {
+  const featured = allVideos.find(v => v.featured) || allVideos[0];
+  const suggested = allVideos
+    .filter(v => v.type === 'long' && v.id !== (featured ? featured.id : ''))
     .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 3);
-  document.getElementById('latestExplainers').innerHTML = explainers.map(video => createVideoCard(video)).join('');
+    .slice(0, 4);
+  
+  const container = document.getElementById('suggestedVideos');
+  
+  if (suggested.length === 0) {
+    container.innerHTML = '<p class="note">No suggested videos yet.</p>';
+    return;
+  }
+  
+  container.innerHTML = suggested.map(video => createVideoCard(video)).join('');
 }
 
 function renderLatestShorts() {
@@ -236,7 +258,15 @@ function renderLatestShorts() {
     .filter(v => v.type === 'short')
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 3);
-  document.getElementById('latestShorts').innerHTML = shorts.map(video => createVideoCard(video)).join('');
+  
+  const container = document.getElementById('latestShorts');
+  
+  if (shorts.length === 0) {
+    container.innerHTML = '<p class="note">No shorts yet.</p>';
+    return;
+  }
+  
+  container.innerHTML = shorts.map(video => createVideoCard(video)).join('');
 }
 
 function createVideoCard(video) {
@@ -260,7 +290,7 @@ function createVideoCard(video) {
   }
   
   return `
-    <a class="card videoCard" href="${video.url}" target="_blank" rel="noopener">
+    <a class="card videoCard" href="video.html?id=${video.id}">
       ${thumbHTML}
       <div class="vBody">
         <h3>${video.title}</h3>
@@ -276,9 +306,12 @@ function filterContent() {
   let filtered = allVideos;
   if (type !== 'all') filtered = filtered.filter(v => v.type === type);
   if (query) filtered = filtered.filter(v => v.title.toLowerCase().includes(query) || v.description.toLowerCase().includes(query));
-  const explainers = filtered.filter(v => v.type === 'long').slice(0, 3);
+  
+  const featured = allVideos.find(v => v.featured) || allVideos[0];
+  const suggested = filtered.filter(v => v.type === 'long' && v.id !== (featured ? featured.id : '')).slice(0, 4);
   const shorts = filtered.filter(v => v.type === 'short').slice(0, 3);
-  document.getElementById('latestExplainers').innerHTML = explainers.length ? explainers.map(v => createVideoCard(v)).join('') : '<p class="note">No explainers found.</p>';
+  
+  document.getElementById('suggestedVideos').innerHTML = suggested.length ? suggested.map(v => createVideoCard(v)).join('') : '<p class="note">No videos found.</p>';
   document.getElementById('latestShorts').innerHTML = shorts.length ? shorts.map(v => createVideoCard(v)).join('') : '<p class="note">No shorts found.</p>';
 }
 
