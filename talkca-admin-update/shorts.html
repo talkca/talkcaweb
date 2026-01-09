@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TALKCA • Shorts</title>
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">T</div>
+    <div>
+      <h1>TALKCA</h1>
+      <small>Shorts</small>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="explainers.html">Explainers</a>
+    <a class="active" href="shorts.html">Shorts</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <div class="card pad">
+    <div class="kicker">Short-form</div>
+    <h2 style="margin:10px 0 6px;">All Shorts</h2>
+    <p class="p">Short clips across platforms. Keep the hook tight and the claim specific.</p>
+
+    <div class="searchRow">
+      <input class="input" id="searchInput" placeholder="Search shorts..." oninput="filterVideos()" />
+      <select class="select" id="topicFilter" onchange="filterVideos()">
+        <option value="all">Topic: All</option>
+        <option value="Inflation">Inflation</option>
+        <option value="Currency">Currency</option>
+        <option value="GDP & Rankings">GDP & Rankings</option>
+        <option value="Markets">Markets</option>
+        <option value="Personal Finance">Personal Finance</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="sectionTitle">
+    <h2>Shorts <span id="videoCount" style="color:var(--muted); font-weight:normal;"></span></h2>
+    <a href="index.html">Back to home</a>
+  </div>
+
+  <section id="videoGrid" class="cards">
+    <!-- Dynamically populated -->
+  </section>
+
+  <footer class="footer">
+    <div>© <span id="y"></span> TALKCA • Finance • Data • Intelligence</div>
+    <div><a class="pill" href="explainers.html">Explainers</a></div>
+  </footer>
+
+</main>
+
+<script>
+// ============================================
+// DATA LOADING
+// ============================================
+let allVideos = [];
+
+async function loadVideos() {
+  // Check localStorage first
+  const localData = localStorage.getItem('talkca_videos');
+  if (localData) {
+    allVideos = JSON.parse(localData);
+    filterVideos();
+    return;
+  }
+  
+  // Fallback: fetch from JSON file
+  try {
+    const response = await fetch('data/videos.json');
+    if (response.ok) {
+      allVideos = await response.json();
+      localStorage.setItem('talkca_videos', JSON.stringify(allVideos));
+    }
+  } catch (e) {
+    console.log('Could not load videos.json');
+    allVideos = [];
+  }
+  
+  filterVideos();
+}
+
+// ============================================
+// FILTERING & RENDERING
+// ============================================
+function filterVideos() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const topic = document.getElementById('topicFilter').value;
+  
+  // Filter to shorts only
+  let filtered = allVideos.filter(v => v.type === 'short');
+  
+  // Apply topic filter
+  if (topic !== 'all') {
+    filtered = filtered.filter(v => v.topic === topic);
+  }
+  
+  // Apply search
+  if (query) {
+    filtered = filtered.filter(v => 
+      v.title.toLowerCase().includes(query) || 
+      v.description.toLowerCase().includes(query)
+    );
+  }
+  
+  // Sort by date (newest first)
+  filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  renderVideos(filtered);
+}
+
+function renderVideos(videos) {
+  const container = document.getElementById('videoGrid');
+  const countEl = document.getElementById('videoCount');
+  
+  countEl.textContent = `(${videos.length})`;
+  
+  if (videos.length === 0) {
+    container.innerHTML = `
+      <div class="card pad" style="grid-column: 1 / -1;">
+        <p class="p">No shorts found matching your criteria.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = videos.map(video => `
+    <a class="card videoCard" href="${video.url}" target="_blank" rel="noopener">
+      <div class="thumb">
+        <span class="badge short">Short</span>
+        <span class="pill">${video.topic}</span>
+      </div>
+      <div class="vBody">
+        <h3>${video.title}</h3>
+        <p>${video.description}</p>
+        <div class="metaRow" style="margin-top:8px;">
+          <span class="pill" style="font-size:11px;">${video.duration || '30 sec'}</span>
+          <span class="pill" style="font-size:11px;">${video.date}</span>
+        </div>
+      </div>
+    </a>
+  `).join('');
+}
+
+// ============================================
+// INIT
+// ============================================
+document.getElementById('y').textContent = new Date().getFullYear();
+loadVideos();
+</script>
+</body>
+</html>
