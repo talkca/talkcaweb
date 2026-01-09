@@ -58,4 +58,232 @@
     </div>
 
     <aside class="card pad">
-      <div class="kic
+      <div class="kicker">Browse</div>
+      <h2 style="margin:10px 0 8px; font-size:18px;">Topics</h2>
+      <p class="p">Filter by category</p>
+      <div class="metaRow" style="margin-top:14px;">
+        <span class="pill">Inflation</span>
+        <span class="pill">Currency</span>
+        <span class="pill">GDP & Rankings</span>
+        <span class="pill">Markets</span>
+        <span class="pill">Personal Finance</span>
+      </div>
+      <div class="searchRow">
+        <input class="input" id="searchInput" placeholder="Search titles..." oninput="filterContent()" />
+        <select class="select" id="typeFilter" onchange="filterContent()">
+          <option value="all">All</option>
+          <option value="long">Long</option>
+          <option value="short">Short</option>
+        </select>
+      </div>
+      <div class="actions">
+        <a class="btn" href="explainers.html">See all explainers</a>
+        <a class="btn" href="shorts.html">See all shorts</a>
+      </div>
+    </aside>
+  </section>
+
+  <div class="sectionTitle">
+    <h2>Latest Explainers</h2>
+    <a href="explainers.html">View all</a>
+  </div>
+  <section id="latestExplainers" class="cards"></section>
+
+  <div class="sectionTitle">
+    <h2>Latest Shorts</h2>
+    <a href="shorts.html">View all</a>
+  </div>
+  <section id="latestShorts" class="cards"></section>
+
+  <footer class="footer">
+    <div>© <span id="y"></span> TALKCA • Finance • Data • Intelligence</div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a class="pill" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
+      <a class="pill" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a class="pill" href="#" target="_blank" rel="noopener">X</a>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+let allVideos = [];
+
+function getYouTubeId(url) {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/shorts\/)([^&\?\/]+)/,
+    /^([a-zA-Z0-9_-]{11})$/
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+function getThumbnail(url) {
+  const videoId = getYouTubeId(url);
+  if (videoId) {
+    return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+  }
+  return null;
+}
+
+async function loadVideos() {
+  const localData = localStorage.getItem('talkca_videos');
+  if (localData) {
+    allVideos = JSON.parse(localData);
+    renderPage();
+    return;
+  }
+  try {
+    const response = await fetch('data/videos.json');
+    if (response.ok) {
+      allVideos = await response.json();
+      localStorage.setItem('talkca_videos', JSON.stringify(allVideos));
+    }
+  } catch (e) {
+    allVideos = [];
+  }
+  renderPage();
+}
+
+function renderPage() {
+  renderFeatured();
+  renderLatestExplainers();
+  renderLatestShorts();
+}
+
+function renderFeatured() {
+  const featured = allVideos.find(v => v.featured) || allVideos[0];
+  if (!featured) return;
+  
+  const container = document.getElementById('featuredVideo');
+  const typeLabel = featured.type === 'long' ? 'Long' : 'Short';
+  const thumbnail = getThumbnail(featured.url);
+  
+  let thumbHTML;
+  if (thumbnail) {
+    thumbHTML = `
+      <div class="thumb-overlay">
+        <img src="${thumbnail}" alt="${featured.title}" class="thumb-img" onerror="this.parentElement.innerHTML='<div class=\\'thumb\\'><span class=\\'badge\\'>Featured • ${typeLabel}</span><span class=\\'pill\\'>${featured.duration || '5-10 min'}</span></div>'">
+        <div class="thumb-badges">
+          <span class="badge">Featured • ${typeLabel}</span>
+          <span class="pill">${featured.duration || '5-10 min'}</span>
+        </div>
+      </div>
+    `;
+  } else {
+    thumbHTML = `
+      <div class="thumb">
+        <span class="badge">Featured • ${typeLabel}</span>
+        <span class="pill">${featured.duration || '5-10 min'}</span>
+      </div>
+    `;
+  }
+  
+  container.innerHTML = `
+    ${thumbHTML}
+    <div class="vBody">
+      <div class="kicker">Latest Focus</div>
+      <h2 class="h-title">${featured.title}</h2>
+      <p class="p">${featured.description}</p>
+      <div class="metaRow">
+        <span class="pill">Topic: ${featured.topic}</span>
+        <span class="pill">Updated: ${featured.date}</span>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="${featured.url}" target="_blank" rel="noopener">Watch on YouTube</a>
+        <a class="btn" href="video.html?id=${featured.id}">Open write-up</a>
+      </div>
+    </div>
+  `;
+}
+
+function renderLatestExplainers() {
+  const explainers = allVideos
+    .filter(v => v.type === 'long')
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3);
+  document.getElementById('latestExplainers').innerHTML = explainers.map(video => createVideoCard(video)).join('');
+}
+
+function renderLatestShorts() {
+  const shorts = allVideos
+    .filter(v => v.type === 'short')
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3);
+  document.getElementById('latestShorts').innerHTML = shorts.map(video => createVideoCard(video, true)).join('');
+}
+
+function createVideoCard(video, isShort = false) {
+  const badgeClass = isShort ? 'badge short' : 'badge';
+  const badgeText = isShort ? 'Short' : 'Long';
+  const linkUrl = isShort ? video.url : `video.html?id=${video.id}`;
+  const target = isShort ? 'target="_blank" rel="noopener"' : '';
+  const thumbnail = getThumbnail(video.url);
+  
+  let thumbHTML;
+  if (thumbnail) {
+    thumbHTML = `
+      <div class="thumb-overlay">
+        <img src="${thumbnail}" alt="${video.title}" class="thumb-img" onerror="this.parentElement.innerHTML='<div class=\\'thumb\\'><span class=\\'${badgeClass}\\'>${badgeText}</span></div>'">
+        <div class="thumb-badges">
+          <span class="${badgeClass}">${badgeText}</span>
+        </div>
+      </div>
+    `;
+  } else {
+    thumbHTML = `<div class="thumb"><span class="${badgeClass}">${badgeText}</span></div>`;
+  }
+  
+  return `
+    <a class="card videoCard" href="${linkUrl}" ${target}>
+      ${thumbHTML}
+      <div class="vBody">
+        <h3>${video.title}</h3>
+        <p>${video.description}</p>
+      </div>
+    </a>
+  `;
+}
+
+function filterContent() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const type = document.getElementById('typeFilter').value;
+  let filtered = allVideos;
+  if (type !== 'all') filtered = filtered.filter(v => v.type === type);
+  if (query) filtered = filtered.filter(v => v.title.toLowerCase().includes(query) || v.description.toLowerCase().includes(query));
+  const explainers = filtered.filter(v => v.type === 'long').slice(0, 3);
+  const shorts = filtered.filter(v => v.type === 'short').slice(0, 3);
+  document.getElementById('latestExplainers').innerHTML = explainers.length ? explainers.map(v => createVideoCard(v)).join('') : '<p class="note">No explainers found.</p>';
+  document.getElementById('latestShorts').innerHTML = shorts.length ? shorts.map(v => createVideoCard(v, true)).join('') : '<p class="note">No shorts found.</p>';
+}
+
+document.getElementById('y').textContent = new Date().getFullYear();
+loadVideos();
+</script>
+</body>
+</html>
+```
+
+### Step 5: Click "Commit changes"
+
+### Step 6: Click "Commit changes" again
+
+---
+
+## Step 7: Test It
+
+1. Wait 1-2 minutes
+2. Go to: `https://talkcaweb.pages.dev`
+3. Press `Ctrl + Shift + R`
+
+**Now thumbnails will show automatically from YouTube!** 🎉
+
+---
+
+The thumbnail is pulled from your YouTube URL automatically. Just make sure your YouTube URL is correct like:
+```
+https://www.youtube.com/watch?v=ABC123xyz
