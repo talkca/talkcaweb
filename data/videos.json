@@ -1,0 +1,90 @@
+[
+  {
+    "id": "v1",
+    "title": "The $1 Salary Problem: When Money Stops Working",
+    "url": "https://www.youtube.com/",
+    "type": "long",
+    "topic": "Inflation",
+    "duration": "8-10 min",
+    "date": "2026-01-08",
+    "description": "A clean breakdown of how inflation, controls, and currency collapse destroy purchasing power — explained with numbers and visuals.",
+    "featured": true
+  },
+  {
+    "id": "v2",
+    "title": "Why Prices Rise Faster Than Salaries",
+    "url": "https://www.youtube.com/",
+    "type": "long",
+    "topic": "Inflation",
+    "duration": "7 min",
+    "date": "2026-01-05",
+    "description": "Purchasing power explained with a simple, visual model.",
+    "featured": false
+  },
+  {
+    "id": "v3",
+    "title": "Currency Collapse: The 3 Signals Everyone Misses",
+    "url": "https://www.youtube.com/",
+    "type": "long",
+    "topic": "Currency",
+    "duration": "9 min",
+    "date": "2026-01-03",
+    "description": "Reserves, confidence, and the black-market premium.",
+    "featured": false
+  },
+  {
+    "id": "v4",
+    "title": "1 Trillion Can't Buy Food",
+    "url": "https://www.youtube.com/",
+    "type": "short",
+    "topic": "Currency",
+    "duration": "45 sec",
+    "date": "2026-01-07",
+    "description": "When currency becomes paper.",
+    "featured": false
+  },
+  {
+    "id": "v5",
+    "title": "Inflation vs You (10 seconds)",
+    "url": "https://www.youtube.com/",
+    "type": "short",
+    "topic": "Inflation",
+    "duration": "10 sec",
+    "date": "2026-01-06",
+    "description": "The silent tax explained fast.",
+    "featured": false
+  },
+  {
+    "id": "v6",
+    "title": "Currency Pegs Break Like This",
+    "url": "https://www.youtube.com/",
+    "type": "short",
+    "topic": "Currency",
+    "duration": "30 sec",
+    "date": "2026-01-04",
+    "description": "Pressure builds, then snaps.",
+    "featured": false
+  }
+]
+```
+
+### Step 6: Scroll down and click "Commit changes"
+
+### Step 7: Click "Commit changes" again in the popup
+
+---
+
+## ✅ Done!
+
+Your folder structure is now:
+```
+your-repo/
+├── index.html
+├── admin.html
+├── explainers.html
+├── shorts.html
+├── video.html
+├── assets/
+│   └── site.css
+└── data/           ← New folder!
+    └── videos.json ← New file!
