@@ -721,12 +721,4 @@ document.addEventListener('DOMContentLoaded', () => {
   checkAuth();
   document.getElementById('videoDate').value = new Date().toISOString().split('T')[0];
   
-  // Allow Enter key on password field
-  document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') attemptLogin();
-  });
-});
-</script>
-
-</body>
-</html>
+  // Allow Enter key on passwor
